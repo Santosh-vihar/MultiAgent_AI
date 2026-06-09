@@ -197,14 +197,19 @@ if page == "Chatbot":
             st.warning("No text could be extracted from the PDF.")
 
     if st.button("Analyze project"):
-        if query and query.strip():
+        if "GROQ_API_KEY" not in st.secrets or not st.secrets["GROQ_API_KEY"].strip():
+            st.error("🔑 **GROQ_API_KEY is not configured!** Please configure the API key in your Streamlit Cloud Dashboard under **Settings -> Secrets** or locally in `.streamlit/secrets.toml`.")
+        elif query and query.strip():
             with st.spinner("Oracle AI is reviewing your project..."):
-                st.session_state.analysis = {
-                    "architect": architect_agent(query),
-                    "risk": risk_agent(query),
-                    "failure": failure_agent(query),
-                    "innovation": innovation_agent(query),
-                }
+                try:
+                    st.session_state.analysis = {
+                        "architect": architect_agent(query),
+                        "risk": risk_agent(query),
+                        "failure": failure_agent(query),
+                        "innovation": innovation_agent(query),
+                    }
+                except Exception as e:
+                    st.error(f"⚠️ **Error connecting to Groq API:** {e}")
         else:
             st.warning("Please enter a project idea or upload a PDF.")
 
@@ -229,11 +234,37 @@ if page == "Chatbot":
 
 if page == "About":
     st.title("About Oracle AI")
-    st.markdown("## About")
-    st.markdown("Oracle AI is an AI-powered review system that helps users find what they may have forgotten or overlooked in a project idea.")
-    st.markdown("### Features")
-    st.markdown("- Intelligent project analysis")
-    st.markdown("- Architecture review")
-    st.markdown("- Risk and failure prediction")
-    st.markdown("- Innovation scoring")
-    st.markdown("- PDF-based analysis")
+    
+    st.markdown(
+        """
+        <div class="hero-card">
+            <h3>Why Oracle AI is better than standard Chatbots</h3>
+            <p>Traditional AI assistants are <b>reactive</b>—they answer questions, write code, or agree with your ideas, which can lead to confirmation bias and critical oversights. 
+            Oracle AI is <b>proactive and adversarial</b>. It doesn't just agree with you; it uses a specialized <b>Multi-Agent framework</b> designed to pressure-test your concepts from four different expert angles:</p>
+            <ul>
+                <li><b>Senior Software Architect:</b> Uncovers hidden dependencies, database designs, and structural gaps.</li>
+                <li><b>Risk Assessment Specialist:</b> Thinks like an attacker to identify security, scalability, and operational risks.</li>
+                <li><b>Failure Prediction Engine:</b> Analyzes bottleneck constraints and provides an objective statistical success probability.</li>
+                <li><b>Innovation Reviewer:</b> Assesses novelty, market practicality, and how to differentiate your idea.</li>
+            </ul>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("### Core Features")
+    st.markdown("- **Adversarial Feedback Loops:** Finds the flaws in your plan before they become expensive mistakes.")
+    st.markdown("- **PDF Document Parsing:** Upload complex project spec sheets directly to get them reviewed instantly.")
+    st.markdown("- **Dynamic Expert Panels:** Simulates a professional corporate design-review board in seconds.")
+
+    st.markdown("---")
+    st.markdown("### Contact & Connect")
+    st.markdown(
+        """
+        Feel free to reach out for feedback, collaborations, or questions!
+        
+        * 📧 **Email:** [santoshvihar06@gmail.com](mailto:santoshvihar06@gmail.com)
+        * 💻 **GitHub:** [GitHub Profile](https://github.com/Santosh-vihar)
+        * 🔗 **LinkedIn:** [Santosh Vihar](https://www.linkedin.com/in/santosh-vihar-39220a355/)
+        """
+    )

@@ -16,7 +16,7 @@ st.markdown(
     """
     <style>
         .stApp {
-            background: radial-gradient(circle at 15% 20%, #f7f4ef 0%, #f1ede6 35%, #e9ecef 100%);
+            background-color: #ffffff;
             color: #1f2937;
         }
         [data-testid="stSidebar"] {
@@ -204,7 +204,15 @@ if page == "Chatbot":
             st.warning("No text could be extracted from the PDF.")
 
     if st.button("Analyze project"):
-        if "GROQ_API_KEY" not in st.secrets or not st.secrets["GROQ_API_KEY"].strip():
+        # Safely retrieve key from environment variables or Streamlit secrets
+        api_key = os.environ.get("GROQ_API_KEY")
+        if not api_key:
+            try:
+                api_key = st.secrets.get("GROQ_API_KEY")
+            except Exception:
+                pass
+
+        if not api_key or not api_key.strip():
             st.error("🔑 **GROQ_API_KEY is not configured!** Please configure the API key in your Streamlit Cloud Dashboard under **Settings -> Secrets** or locally in `.streamlit/secrets.toml`.")
         elif query and query.strip():
             with st.spinner("Oracle AI is reviewing your project..."):

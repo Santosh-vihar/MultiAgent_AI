@@ -9,6 +9,7 @@ from agents import (
     innovation_agent,
 )
 from pdf_reader import extract_pdf_text
+from hf_client import get_groq_api_key
 
 st.set_page_config(page_title="Oracle AI", layout="wide")
 
@@ -204,13 +205,8 @@ if page == "Chatbot":
             st.warning("No text could be extracted from the PDF.")
 
     if st.button("Analyze project"):
-        # Safely retrieve key from environment variables or Streamlit secrets
-        api_key = os.environ.get("GROQ_API_KEY")
-        if not api_key:
-            try:
-                api_key = st.secrets.get("GROQ_API_KEY")
-            except Exception:
-                pass
+        # Safely retrieve key using the helper function
+        api_key = get_groq_api_key()
 
         if not api_key or not api_key.strip():
             st.error("🔑 **GROQ_API_KEY is not configured!** Please configure the API key in your Streamlit Cloud Dashboard under **Settings -> Secrets** or locally in `.streamlit/secrets.toml`.")

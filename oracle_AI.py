@@ -73,10 +73,17 @@ nav_options = ["Home", "Chatbot", "About"]
 if "current_page" not in st.session_state:
     st.session_state.current_page = "Home"
 
+if "navigation_selectbox" not in st.session_state:
+    st.session_state.navigation_selectbox = st.session_state.current_page
+
+def on_page_change():
+    st.session_state.current_page = st.session_state.navigation_selectbox
+
 page = st.sidebar.selectbox(
     "Navigate",
     nav_options,
-    index=nav_options.index(st.session_state.current_page),
+    key="navigation_selectbox",
+    on_change=on_page_change,
 )
 st.session_state.current_page = page
 
@@ -173,6 +180,7 @@ if page == "Home":
 
     if st.button("Open Chatbot"):
         st.session_state.current_page = "Chatbot"
+        st.session_state.navigation_selectbox = "Chatbot"
         st.rerun()
 
 if page == "Chatbot":
